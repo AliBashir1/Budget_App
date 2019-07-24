@@ -125,13 +125,35 @@ var UIController = (function(){
             newHtml = newHtml.replace('%description%', obj.description);
             newHtml = newHtml.replace('%value%', obj.value);
             
-            // put html into the DOM
+            // put html into the DOM -- search insertAjacentHTML for more understanding. 
             
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
             
             
             
         },
+        
+      clearFields: function(){
+          var fields, fieldsArr;
+          
+          // check notes for detail 
+         fields =  document.querySelectorAll(DOMStrings.inputDescription + ', ' + DOMStrings.inputValue );
+        
+          // remember call method takes first argument for this. fields becomes this and return array.  check chapter 5 notes
+          
+         fieldsArr = Array.prototype.slice.call(fields);  
+          // 
+          fieldsArr.forEach(function(current, index, array){
+              
+              current.value = "";
+              
+          });
+          // look at this fields =  document.querySelectorAll( *first element* DOMStrings.inputDescription + ', ' + DOMStrings.inputValue); and read below 
+          //since fieldArry holds array from fields and first element of this array is DomStrings.inputDescription so if you choose to focus on first element of fieldsArr that would be it.
+          fieldsArr[0].focus();
+          
+          
+      },
         
         getDomStrings : function(){
             return DOMStrings;
@@ -150,6 +172,7 @@ var controller = (function(budgetctrl, UIctrl){
         var dom = UIctrl.getDomStrings();
        
         document.querySelector(dom.inputButton).addEventListener('click',controlAddItem);
+       
         document.addEventListener('keypress',function(e){
         
         if(e.keyCode === 13 || e.which === 13){
@@ -177,10 +200,12 @@ var controller = (function(budgetctrl, UIctrl){
     // 3. add item to UI controler
         UIctrl.addListItem(newItem, input.type);
         
+    // 4. Clear the Fields
+        UIctrl.clearFields();
+        
+    // 5. calculate budgest
     
-    // 4. calculate budgest
-    
-    // 5. Display the budget on the UI 
+    // 6. Display the budget on the UI 
         
    
     }
