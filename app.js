@@ -6,15 +6,15 @@ var budgetController = (function(){
     // some code here 
     // create an constructor of Expense and income. Create an object of expense and income. create object of totals. 
     
-    var Expense = function(id, discription , value){
+    var Expense = function(id, description , value){
         this.id  = id; // unique id for keeping track
-        this.discription = discription;
+        this.description = description;
         this.value = value;
     }
     
-    var Income = function(id, discription, value){
+    var Income = function(id, description, value){
         this.id =id;
-        this.discription = discription;
+        this.description = description;
         this.value = value ; 
     }
     // we need a data structure where we can save all of the intances of income and expenses
@@ -58,12 +58,8 @@ var budgetController = (function(){
             
             return newItem;
             
-        },
-        
-        testing: function(){
-            return data; 
         }
-        
+      
         
     }
     
@@ -87,6 +83,8 @@ var UIController = (function(){
         inputDescription : '.add__description',
         inputValue : '.add__value',
         inputButton : '.add__btn',
+        incomeContainer : '.income__list',
+        expenseContainer : '.expenses__list'
         
         
     }
@@ -104,12 +102,42 @@ var UIController = (function(){
            
                 };
         },
+         // adding income and expense div 
+        addListItem : function(obj, type){
+            var html, newHtml, element;
+            
+           // create html string with place holder text. use of % in place holder is optional just to identify placeholder. 
+            if (type === 'inc'){
+                    
+                    element = DOMStrings.incomeContainer;
+                
+                     html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+           
+            } else if (type ==='exp'){
+                    
+                    element = DOMStrings.expenseContainer;
+                    html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div</div></div>'
+                
+            }
+            // replace place holder with actuall data
+            // replace method takes 1st parameter of placeholder and second parameter from what you want to replace with 
+            newHtml = html.replace('%id%', obj.id);
+            newHtml = newHtml.replace('%description%', obj.description);
+            newHtml = newHtml.replace('%value%', obj.value);
+            
+            // put html into the DOM
+            
+            document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+            
+            
+            
+        },
         
         getDomStrings : function(){
             return DOMStrings;
                 }
         
-    }
+    };
     
 })(); 
 
@@ -144,9 +172,11 @@ var controller = (function(budgetctrl, UIctrl){
         
     // 2. add the item to budget controller 
         
-        budgetctrl.addItem(input.type, input.description, input.value);
+       var newItem = budgetctrl.addItem(input.type, input.description, input.value);
         
     // 3. add item to UI controler
+        UIctrl.addListItem(newItem, input.type);
+        
     
     // 4. calculate budgest
     
